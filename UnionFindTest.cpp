@@ -14,26 +14,28 @@ public:
     }
 
     void unite(std::size_t a, std::size_t b) {
-        if (check(a, b)) {
-            auto t{arr_[b]};
-            for(std::size_t i{0}; i != arr_.size(); ++i) {
-                if (arr_[i] == t) {
-                    arr_[i] = arr_[a];
-                }
-            }
-        }
+        auto ra = root(a);
+        auto rb = root(b);
+        arr_[ra] = rb;
     }
 
     bool find(std::size_t a, std::size_t b) {
-        if (check(a, b)) {
-            return arr_[a] == arr_[b];
-        }
-        return false;
+        return root(a) == root(b);
     }
 
 private:
-    bool check(std::size_t a, std::size_t b) {
-        return a < arr_.size() && b < arr_.size();
+    std::size_t root(std::size_t a) {
+        check(a);
+        while (arr_[a] != a) {
+            a = arr_[a];
+        }
+        return a;
+    }
+
+    void check(std::size_t a) {
+        if (a < arr_.size()) {
+            return;
+        } else throw std::runtime_error{"Out of range"};
     }
 
     std::vector<std::size_t> arr_;
