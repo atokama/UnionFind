@@ -11,34 +11,42 @@ public:
         for (std::size_t i{0}; i != arr_.size(); ++i) {
             arr_[i] = i;
         }
+        size_.assign(arr_.size(), 1);
     }
 
     void unite(std::size_t a, std::size_t b) {
+        check(a, b);
         auto ra = root(a);
         auto rb = root(b);
-        arr_[ra] = rb;
+        if (size_[ra] < size_[rb]) {
+            arr_[ra] = arr_[rb];
+            size_[rb] += size_[ra];
+        } else {
+            arr_[rb] = arr_[ra];
+            size_[ra] += size_[rb];
+        }
     }
 
     bool find(std::size_t a, std::size_t b) {
+        check(a, b);
         return root(a) == root(b);
     }
 
 private:
     std::size_t root(std::size_t a) {
-        check(a);
         while (arr_[a] != a) {
             a = arr_[a];
         }
         return a;
     }
 
-    void check(std::size_t a) {
-        if (a < arr_.size()) {
+    void check(std::size_t a, std::size_t b) {
+        if (a < arr_.size() && b < arr_.size()) {
             return;
         } else throw std::runtime_error{"Out of range"};
     }
 
-    std::vector<std::size_t> arr_;
+    std::vector<std::size_t> arr_, size_;
 };
 
 TEST_CASE("UnionFind", "[UnionFind]") {
